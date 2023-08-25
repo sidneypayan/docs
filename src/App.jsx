@@ -1,26 +1,32 @@
-import { useState } from 'react'
+import {
+  DocumentEditorContainerComponent, Toolbar, Inject
+} from '@syncfusion/ej2-react-documenteditor';
 
 import './App.css'
-import mammoth from 'mammoth'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  let editorObj = DocumentEditorContainerComponent | null
 
-  const mamothConvert = async () => {
+  let fieldCode = 'MERGEFIELD  Easydoct_Praticien_Nom  \\* MERGEFORMAT '
+  let fieldResult = '«Praticien Nom»';
 
-    const buffer = new ArrayBuffer(8)
-
-    const mammothConvert = await mammoth.extractRawText({ path: "../prob.docx" })
-    const html = mammothConvert.value
-    const messages = mammothConvert.messages
-
-    return html
+  const onAddField = () => {
+    editorObj?.documenteditor.editor.insertField(fieldCode, fieldResult);
   }
 
-  console.log(mamothConvert())
+  const onSave = () => {
+    editorObj?.documentEditor.save("Sample", "Docx")
+  }
 
   return (
-    <h1>mamothConvert</h1>
+    <div className='App'>
+      <button onClick={onSave} style={{ marginBottom: 10 }}>Save</button>
+      <button onClick={onAddField} style={{ marginBottom: 10 }}>Add Field</button>
+      <DocumentEditorContainerComponent ref={(ins => editorObj = ins)} id="container" width={'100vw'} height={'100vh'} serviceUrl="https://ej2services.syncfusion.com/production/web-services/api/documenteditor/" enableToolbar={true}>
+        <Inject services={[Toolbar]}></Inject>
+      </DocumentEditorContainerComponent>
+    </div>
   )
 }
 
