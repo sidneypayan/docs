@@ -8,11 +8,11 @@ import './App.css'
 function App() {
   let editorObj = DocumentEditorContainerComponent | null
 
-  let fieldCode = 'MERGEFIELD  Easydoct_Praticien_Nom  \\* MERGEFORMAT '
-  let fieldResult = '«Praticien Nom»';
+  let fieldCode = 'MERGEFIELD  Praticien Nom  \\* MERGEFORMAT '
+  let fieldResult = 'Easydoct_Praticien_Nom';
 
   const onAddField = () => {
-    editorObj?.documenteditor.editor.insertField(fieldCode, fieldResult);
+    editorObj?.documentEditor.editor.insertField(fieldCode, fieldResult);
   }
 
   const onSave = () => {
