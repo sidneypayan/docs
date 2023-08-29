@@ -1,56 +1,32 @@
-import React, { useState } from 'react'
-import mammoth from 'mammoth'
-import { useRef } from 'react';
+import React, { useState } from "react";
+import mammoth from "mammoth";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
+const MammothHTML = ({ sendText }) => {
+  const [value, setValue] = useState("");
 
-const MammothHTML = () => {
-    const ref = useRef(0)
-    const [htmlContent, setHtmlContent] = useState('');
-    const [content, setContent] = useState('')
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
 
-    const exportHTML = (body) => {
-        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
-            "xmlns:w='urn:schemas-microsoft-com:office:word' " +
-            "xmlns='http://www.w3.org/TR/REC-html40'>" +
-            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
-        const footer = "</body></html>";
-        const sourceHTML = header + body + footer;
-
-        const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-
-        return setContent(source)
-        // const fileDownload = document.createElement("a");
-        // document.body.appendChild(fileDownload);
-        // fileDownload.href = source;
-        // fileDownload.download = 'document.doc';
-        // fileDownload.click();
-        // document.body.removeChild(fileDownload);
+    if (file) {
+      const result = await mammoth.convertToHtml({ arrayBuffer: file });
+      setValue(result.value);
+      sendText(result.value);
     }
+  };
 
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
+  return (
+    <div style={{ display: "flex", width: "100%" }}>
+      <input type="file" onChange={handleFileChange} />
+      <ReactQuill
+        style={{ margin: "0 auto", width: "50%", height: "100vh" }}
+        theme="snow"
+        value={value}
+        onChange={setValue}
+      />
+    </div>
+  );
+};
 
-        if (file) {
-            const result = await mammoth.convertToHtml({ arrayBuffer: file });
-            setHtmlContent(result.value);
-            exportHTML(result.value)
-        }
-    };
-
-    const onExport = () => {
-        return ref.download = `${content}.docx`
-    }
-
-
-
-
-    return (
-        <div>
-            <input type="file" onChange={handleFileChange} />
-            <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-            <a onClick={onExport} href={content} ref={ref} >Save</a>
-        </div>
-    );
-}
-
-export default MammothHTML
+export default MammothHTML;
