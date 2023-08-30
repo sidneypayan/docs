@@ -1,52 +1,61 @@
-import { useState, useRef } from "react";
-import "./App.css";
-import MammothHTML from "./components/MammothHTML";
-import { Container } from "@mui/material";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import { useState, Fragment } from 'react'
+import './App.css'
+import QuillEditor from './components/QuillEditor'
+import { Container, Stack } from '@mui/material'
+import {
+	PDFViewer,
+	Page,
+	Text,
+	View,
+	Document,
+	StyleSheet,
+} from '@react-pdf/renderer'
+import parse from 'html-react-parser'
+import { useEditorContext } from './context/editor'
+import UploadWord from './components/UploadWord'
+import ConvertToPDF from './components/ConvertToPDF'
+
+const styles = StyleSheet.create({
+	page: {
+		flexDirection: 'row',
+		backgroundColor: '#E4E4E4',
+	},
+	section: {
+		margin: 10,
+		padding: 10,
+		flexGrow: 1,
+	},
+})
 
 function App() {
-  const doc = new jsPDF();
-  const [text, setText] = useState("");
-  const [displayPDF, setDisplayPDF] = useState(false);
-  const printRef = useRef();
+	const { text, pdf } = useEditorContext()
 
-  console.log(printRef.current);
+	console.log(text)
 
-  const sendText = (text) => {
-    setText(text);
-  };
+	// const sendText = text => {
+	// 	setText(convert(text))
+	// }
 
-  console.log(text);
-
-  // const handleDownloadPdf = () => {
-  //   doc.text(text, 10, 10);
-  //   doc.save("a4.pdf");
-  // };
-
-  const handleDownloadPdf = async () => {
-    const element = printRef.current;
-    const canvas = await html2canvas(element);
-    const data = canvas.toDataURL("image/png");
-    const pdf = new jsPDF();
-    const imgProperties = pdf.getImageProperties(data);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-
-    pdf.addImage(data, "PNG", 10, 10, pdfWidth, pdfHeight);
-    pdf.save("print.pdf");
-  };
-
-  return (
-    <Container maxWidth="xl">
-      <button onClick={handleDownloadPdf}>Générer PDF</button>
-      {text ? (
-        <div ref={printRef} dangerouslySetInnerHTML={{ __html: text }}></div>
-      ) : (
-        <MammothHTML sendText={sendText} />
-      )}
-    </Container>
-  );
+	return (
+		<Stack flexDirection='row'>
+			<Stack flexDirection='column'>
+				<UploadWord />
+				<ConvertToPDF />
+			</Stack>
+			{/* <button onClick={handleDownloadPdf}>Générer PDF</button>
+			<MammothHTML sendText={sendText} /> */}
+			<QuillEditor />
+			<PDFViewer width='70%' height='800px'>
+				<Document>
+					<Page size='A4' style={styles.page}>
+						<View style={styles.section}>
+							<Text>{pdf}</Text>
+						</View>
+					</Page>
+				</Document>
+			</PDFViewer>
+		</Stack>
+	)
 }
 
-export default App;
+export default App
