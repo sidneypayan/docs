@@ -1,5 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react'
-import { convert } from 'html-to-text'
+import { useState, createContext, useContext } from 'react'
 
 const EditorContext = createContext()
 
@@ -8,14 +7,12 @@ const EditorProvider = ({ children }) => {
 	const [convertedText, setConvertedText] = useState('')
 	const [pdf, setPdf] = useState('')
 
-	console.log(text)
-
 	const updateValue = data => {
 		setText(data)
 	}
 
 	const convertToPDF = () => {
-		setPdf(convert(text))
+		setPdf(text)
 	}
 
 	const exposed = {
@@ -23,6 +20,7 @@ const EditorProvider = ({ children }) => {
 		pdf,
 		convertToPDF,
 		updateValue,
+		convertedText,
 	}
 
 	return (
