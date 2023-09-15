@@ -15,12 +15,17 @@ const EditorProvider = ({ children }) => {
 		setPdf(text)
 	}
 
+	const generateDoc = () => {
+		console.log('ok')
+	}
+
 	const exposed = {
 		text,
 		pdf,
 		convertToPDF,
 		updateValue,
 		convertedText,
+		generateDoc,
 	}
 
 	return (

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useEditorContext } from '../context/editor'
+import { Container } from '@mui/material'
 
 const QuillEditor = () => {
 	const modules = {
@@ -42,13 +43,15 @@ const QuillEditor = () => {
 	const { text, updateValue } = useEditorContext()
 
 	return (
-		<ReactQuill
-			modules={modules}
-			formats={formats}
-			theme='snow'
-			value={text}
-			onChange={updateValue}
-		/>
+		<Container maxWidth='md'>
+			<ReactQuill
+				modules={modules}
+				formats={formats}
+				theme='snow'
+				value={text}
+				onChange={updateValue}
+			/>
+		</Container>
 	)
 }
 
